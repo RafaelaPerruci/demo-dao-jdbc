@@ -1,3 +1,5 @@
+import model.dao.DaoFactory;
+import model.dao.SellerDAO;
 import model.entities.Department;
 import model.entities.Seller;
 
@@ -15,6 +17,8 @@ public class Main {
                 LocalDate.parse("20/07/2022", fmt1), 3000.0, obj);
 
         System.out.println(seller);
+
+        SellerDAO sellerDAO = DaoFactory.createSellerDao();
 
     }
 }
