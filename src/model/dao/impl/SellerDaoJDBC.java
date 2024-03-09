@@ -38,7 +38,7 @@ public class SellerDaoJDBC implements SellerDAO {
     @Override
     public Seller findById(Integer id) {
         PreparedStatement st = null;
-        ResultSet rs = null; //sempre retorna apontando para a posição 0, onde não há resultado, chamar o .next()
+        ResultSet rs = null; //o ResultSet sempre tem que tratar porque pode dar um SQL Exception
         try {
             st = conn.prepareStatement("SELECT seller.*,department.Name as DepName\n" +
                     "FROM seller INNER JOIN department\n" +
@@ -47,17 +47,10 @@ public class SellerDaoJDBC implements SellerDAO {
 
             st.setInt(1, id);
             rs = st.executeQuery();
+            //sempre retorna apontando para a posição 0, onde não há resultado, por isso tem que chamar o .next()
             if (rs.next()){
-                Department dep = new Department();
-                dep.setId(rs.getInt("DepartmentId"));
-                dep.setName(rs.getString("DepName"));
-                Seller obj = new Seller();
-                obj.setId(rs.getInt("Id"));
-                obj.setName(rs.getString("Name"));
-                obj.setEmail(rs.getString("Email"));
-                obj.setDate(rs.getDate("BirthDate"));
-                obj.setBaseSalary(rs.getDouble("BaseSalary"));
-                obj.setDepartment(dep);
+                Department dep = instantiateDepartment(rs);
+                Seller obj = instantiateSeller(rs, dep);
                 return obj;
             }
             return null;
@@ -68,6 +61,24 @@ public class SellerDaoJDBC implements SellerDAO {
             DB.closeResultSet(rs);
         }
 
+    }
+
+    private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException{
+        Seller obj = new Seller();
+        obj.setId(rs.getInt("Id"));
+        obj.setName(rs.getString("Name"));
+        obj.setEmail(rs.getString("Email"));
+        obj.setDate(rs.getDate("BirthDate"));
+        obj.setBaseSalary(rs.getDouble("BaseSalary"));
+        obj.setDepartment(dep);
+        return obj;
+    }
+
+    private Department instantiateDepartment(ResultSet rs) throws SQLException { //Estou propagando porque já fou tratado
+        Department dep = new Department();                                       //na chamada de cima
+        dep.setId(rs.getInt("DepartmentId"));
+        dep.setName(rs.getString("DepName"));
+        return dep;
     }
 
     @Override
