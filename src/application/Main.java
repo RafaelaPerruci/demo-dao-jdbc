@@ -1,3 +1,5 @@
+package application;
+
 import model.dao.DaoFactory;
 import model.dao.SellerDAO;
 import model.entities.Department;
