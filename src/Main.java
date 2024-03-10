@@ -5,9 +5,7 @@ import model.entities.Seller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,12 +22,16 @@ public class Main {
             System.out.println(s);
         }
         System.out.println("\n=== TEST n°3:  seller findAll====");
-        List<Seller> list2 = sellerDAO.findAll();
-        list2.sort(Comparator.comparing(Seller::getName));
+        list = sellerDAO.findAll();
+        list.sort(Comparator.comparing(Seller::getName));
         //list2.sort(Comparator.comparing(Seller::getId));
-        for (Seller s : list2){
+        for (Seller s : list){
             System.out.println(s);
         }
 
+        System.out.println("\n=== TEST n°4: insert seller ====");
+        Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.0, department);
+        sellerDAO.insert(newSeller);
+        System.out.println(newSeller.getId()  + newSeller.getName());
     }
 }
